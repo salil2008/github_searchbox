@@ -9,7 +9,8 @@ module.exports = SearchApp = React.createClass({
   getInitialState: function(props){
     console.log("getInitialState");
     return {
-      list: 'empty'
+      list: 'empty',
+      remembered : ['empty']
     };
 
   },
@@ -51,22 +52,32 @@ module.exports = SearchApp = React.createClass({
 
   onChange : function(event){
     console.log("Changed");
-
+    var flag = false;
     var str = document.getElementById("searchbox").value;
 
     console.log(str.length);
 
     if(str.length >= 3) {
-      var successCallback = function(data){
+      var successCallback = function(response){
         $( ".search-box-container" ).removeClass( "loading" )
 		    console.log('Fetched')
-				console.log(data)
+				console.log(response)
 
+        //this.state.remembered.concat(str)
 		    this.setState({
-		    	list : data.items
+		    	list : response.items,
+          remembered : this.state.remembered.concat(str)
 		    })
 
 	    }.bind(this);
+
+      $('#suggestlist').html('');
+      this.state.remembered.forEach(function(i){
+        if (i == str) {
+          flag = true
+        }
+        $('#suggestlist').append('<option id ='+ i +'>'+i+'</option>')
+      })
 
 	    var server_url = "https://api.github.com/search/users?q="+ str +"+in:login+type:user&per_page=10";
       console.log(server_url);
@@ -78,10 +89,18 @@ module.exports = SearchApp = React.createClass({
 
   render: function(){
 
+    // var rlist = this.state.remembered
+    // console.log(rlist);
+    // if(rlist && rlist.length > 0){
+    //   for (var i = 0; i < rlist.length; i++) {
+    //     $('#suggestlist').append('<option id ='+ rlist[i] +'>'+rlist[i]+'</option>')
+    //   }
+    // }
+
     return (
       <div className="search-app">
         <h2 > Search Box </h2>
-        <SearchBox change = {this.onChange} />
+        <SearchBox change = {this.onChange} rlist = {this.state.remembered} />
         <ResultSet list = {this.state.list} />
       </div>
     )

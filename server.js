@@ -26,6 +26,7 @@ app.use(bodyParser.urlencoded({
 app.use(bodyParser.json());
 
 app.get('/', routes.index);
+app.get('/user/:name', routes.getUser);
 
 app.use("/", express.static(__dirname + "/public/"));
 

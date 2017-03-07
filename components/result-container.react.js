@@ -11,7 +11,7 @@ module.exports = ResultContainer = React.createClass({
           <cite>
             <h2>{temp.login}</h2>
           </cite>
-          <h4><a href={temp.url}>{temp.url}</a></h4>
+          <h4><a href={temp.html_url}>{temp.html_url}</a></h4>
         </blockquote>
       </li>
     )

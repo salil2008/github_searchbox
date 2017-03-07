@@ -17,23 +17,26 @@ var async = require('async');
 var _ = require('underscore');
 var sockets = require('../../socketEvents');
 var io;
+var rest = require('restler');
 console.log(sockets);
 console.log('DB Connection Established');
-
-var knex = require('knex')({
-	client: 'mysql',
-	connection: {
-	    host     : 'localhost',
-        user     : 'root',
-        password : 'root',
-        database : 'deltax_task2'
-	}
-});
 
 var self = module.exports = {
   //Methods Here
 	sockets : function(server){
 		io = require('socket.io').listen(server);
+	},
+
+	getUser : function(req, res) {
+		var name = req.params.name
+		var server_url = "https://api.github.com/search/users?q="+ name +"+in:login+type:user&per_page=10";
+		rest.get(server_url).on('complete', function(data) {
+		  //console.log(data);
+			res.json({statusCode : 200, data : data})
+		}).on('error', function(data) {
+		  //console.log(data);
+			res.json({statusCode : 500, data : data})
+		});
 	}
 
 }

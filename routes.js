@@ -16,6 +16,10 @@ module.exports = {
       markup: markup
     });
 
+  },
+
+  getUser : function(req, res) {
+    controller.generic.getUser(req, res)
   }
 
 }
