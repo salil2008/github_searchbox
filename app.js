@@ -1,7 +1,7 @@
 var React = require('react');
-var searchApp = require('./components/search-app-main.react');
+var SearchApp = require('./components/search-app-main.react');
 
 React.render(
-  <TweetsApp />,
+  <SearchApp />,
   document.getElementById('my_app')
 );
