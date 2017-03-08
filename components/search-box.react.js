@@ -7,7 +7,7 @@ module.exports = SearchBox = React.createClass({
   render: function(){
     return (
       <div className="search-box-container">
-        <input type="text" id = "searchbox" onChange = {this.props.change} list = "suggestlist" />
+        <input type="text" id = "searchbox" list = "suggestlist" />
         <img id='loading' src="https://s11.postimg.org/tf6l65lf7/image.gif"/>
         <datalist id="suggestlist"></datalist>
       </div>

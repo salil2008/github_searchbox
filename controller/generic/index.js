@@ -32,7 +32,12 @@ var self = module.exports = {
 		var server_url = "https://api.github.com/search/users?q="+ name +"+in:login+type:user&per_page=10";
 		rest.get(server_url).on('complete', function(data) {
 		  //console.log(data);
-			res.json({statusCode : 200, data : data})
+			if(data.items) {
+				res.json({statusCode : 200, data : data})
+			} else {
+				res.json({statusCode : 200, data : 'limit_reached'})
+			}
+
 		}).on('error', function(data) {
 		  //console.log(data);
 			res.json({statusCode : 500, data : data})

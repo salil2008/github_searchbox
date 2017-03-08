@@ -25,6 +25,23 @@ module.exports = SearchApp = React.createClass({
     var self = this;
     //self.initiateAutocomplete();
     //className = "awesomplete" autoComplete = 'off' autoComplete = 'list'
+
+    var typingTimer;
+    var doneTypingInterval = 1000;
+    var $input = $('#searchbox');
+
+    $input.on('keyup', function () {
+      clearTimeout(typingTimer);
+      typingTimer = setTimeout(doneTyping, doneTypingInterval);
+    });
+
+    $input.on('keydown', function () {
+      clearTimeout(typingTimer);
+    });
+
+    function doneTyping () {
+      self.onChange()
+    }
   },
 
   // initiateAutocomplete : function(){
@@ -52,34 +69,59 @@ module.exports = SearchApp = React.createClass({
 
   onChange : function(event){
     console.log("Changed");
-    var flag = false;
+
     var str = document.getElementById("searchbox").value;
 
-    console.log(str.length);
+    //console.log(str.length);
 
     if(str.length >= 3) {
+
       var successCallback = function(response){
         $( ".search-box-container" ).removeClass( "loading" )
-		    console.log('Fetched')
-				console.log(response)
+        var flag = false
 
-        //this.state.remembered.concat(str)
-		    this.setState({
-		    	list : response.items,
-          remembered : this.state.remembered.concat(str)
-		    })
+        $('#suggestlist').html('');
+        this.state.remembered.forEach(function(i){
+          if(i == str) {
+            flag = true
+          }
+          $('#suggestlist').append('<option id ='+ i +'>'+i+'</option>')
+        })
+
+        if(flag) {
+          //pass
+        } else {
+          $('#suggestlist').append('<option id ='+ str +'>'+str+'</option>')
+        }
+        if(response.data != 'limit_reached') {
+          if(flag) {
+            this.setState({
+    		    	list : response.data.items
+    		    })
+          } else {
+            this.setState({
+    		    	list : response.data.items,
+              remembered : this.state.remembered.concat(str)
+    		    })
+          }
+        } else {
+          if(flag) {
+            this.setState({
+    		    	list : []
+    		    })
+          } else {
+            this.setState({
+    		    	list : [],
+              remembered : this.state.remembered.concat(str)
+    		    })
+          }
+        }
+
 
 	    }.bind(this);
 
-      $('#suggestlist').html('');
-      this.state.remembered.forEach(function(i){
-        if (i == str) {
-          flag = true
-        }
-        $('#suggestlist').append('<option id ='+ i +'>'+i+'</option>')
-      })
-
-	    var server_url = "https://api.github.com/search/users?q="+ str +"+in:login+type:user&per_page=10";
+	    //var server_url = "https://api.github.com/search/users?q="+ str +"+in:login+type:user&per_page=10";
+      var server_url = "/user/"+str
       console.log(server_url);
       $( ".search-box-container" ).addClass( "loading" );
 	    this.makeHTTPGetRequest(server_url, successCallback);
@@ -88,14 +130,6 @@ module.exports = SearchApp = React.createClass({
   },
 
   render: function(){
-
-    // var rlist = this.state.remembered
-    // console.log(rlist);
-    // if(rlist && rlist.length > 0){
-    //   for (var i = 0; i < rlist.length; i++) {
-    //     $('#suggestlist').append('<option id ='+ rlist[i] +'>'+rlist[i]+'</option>')
-    //   }
-    // }
 
     return (
       <div className="search-app">
