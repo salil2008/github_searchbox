@@ -27,7 +27,7 @@ module.exports = SearchApp = React.createClass({
     //className = "awesomplete" autoComplete = 'off' autoComplete = 'list'
 
     var typingTimer;
-    var doneTypingInterval = 1000;
+    var doneTypingInterval = 3000;
     var $input = $('#searchbox');
 
     $input.on('keyup', function () {
